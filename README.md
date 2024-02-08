@@ -23,14 +23,15 @@
 
 ### i. 语言简述
 
-#### 5种语句
+#### 7种语句
 
 - 循环绘图（FOR-DRAW）
 - 比例设置（SCALE）
 - 角度旋转（ROT）
 - 坐标平移（ORIGIN）
 - 注释    （-- 或 //）
-- 颜色
+- 颜色设置
+- 绘制椭圆
 
 #### 屏幕坐标系
 
@@ -154,9 +155,9 @@ ROT IS 弧度值；
 
 计算公式：
 
-- $旋转后X = 旋转前 X*COS(弧度) + 旋转前Y*SIN(弧度) $
+- 旋转后X = 旋转前 X\*COS(弧度) + 旋转前Y\*SIN(弧度) 
 
-- $旋转后Y = 旋转前Y*COS(弧度)-旋转前X*SIN(弧度)$
+- 旋转后Y = 旋转前Y\*COS(弧度)-旋转前X\*SIN(弧度)
 
 公式的推导可参阅辅助教材。
 
@@ -314,7 +315,7 @@ SET_CIRCLE (圆心x坐标,圆心y坐标) RADIUS (x方向半径，y方向半径);
 
 首先，根据绘图语言的语法设计对应的文法，然后经过对原始文法的进行去二义性、去左递归、提取左因子的处理得到无二义、无左递归的文法。最后，改写文法得到EBNF产生式。最终EBNF文法为：
 
-```
+```mathematica
 Program → { Statement SEMICOLON } 
 
 Statement → OriginStatement | ScaleStatement | RotStatement | ForDrawStatement | ColorStatement | SetCircleStatement
@@ -360,7 +361,7 @@ Atom → CONST_ID | T | FUNCTION LEFT_BRACKET Expression RIGHT_BRACKET | LEFT_BR
 
 - 关于**表达式的化简**。考虑到用户输入的表达式可能不是最简的，则从根节点开始遍历树结构。化简表达式方法如下：
 
-- 对于所有不含参数的最小子树通过先序遍历得到表达式的字符串。该字符串一定是由常量、运算符、函数构成的，即一定可以被计算。使用Sympy 库中的 `sympify()` 函数对这个可计算的表达式的字符串进行计算，得到一个常量结果，并存储为一个新的常量节点。
+- 对于所有不含参数的最小子树通过先序遍历得到表达式的字符串。该字符串一定是由常量、运算符、函数构成的，即一定可以被计算。使用 ***Sympy 库*** 中的 `sympify()` 函数对这个可计算的表达式的字符串进行计算，得到一个常量结果，并存储为一个新的常量节点。
 
 - 对于有参数的最小子树，同样通过先序遍历得到表达式的字符串，使用Sympy 库中的 `sympify()` 函数对这个参数表达式进行化简，最后的结果是一个含参数的最简表达式，故将他存储为一个新的参数表达式节点，这是一个类型为参数表达式的token。
 
@@ -394,7 +395,7 @@ Atom → CONST_ID | T | FUNCTION LEFT_BRACKET Expression RIGHT_BRACKET | LEFT_BR
    - 创建绘图函数`paint(self, T_start, T_end, T_step, Point_x, Point_y)` ，`T_start` 是遍历开始时的数值，`T_end` 是遍历结束时的数值，`T_step` 时遍历步长，`Point_x` 和 `Point_y` 均为含有参数T的表达式。该函数的目的时用于绘制出来从 `T_start` 到 `T_end` 所有点的坐标。
    - 为了方便计算，创建了 `convert_to_float` 函数，将语法分析传入的字符串数字转化为float类型。同时，创建了 `count` 函数将字符串表达式中的函数名转换为小写，便于利用 `eval` 函数计算出含有参数T的表达式的值
    - 在前面三个函数的基础之上，已经满足了画图的基本条件。对于我们的程序，实际上只有 `ForDrawStatementpainter` 函数调用了绘图函数，前面的函数只是在为画图做准备没有调用 `paint` 绘图函数。通过 `ForDrawStatementpainter` 函数绘制出若干的点的坐标，再将这些点的坐标保存在Points中，然后利用python中的 `matplotlib.pyplot` 模块，调用 `plt.plot` 函数进行画图。
-   - 不过我们自己创新的 `Set_circle_Statement` 语句有所不同，对于这条语句，只需要输入一条 `Set_circle_Statement` 语句，就可以绘制出一个圆或者椭圆。具体原因是因为，在进行 `Set_circle_Statement` 的语义分析时，会将它里面包含的绘制椭圆和圆的参数传入`orx`，`ory`，`scx`，`scy `和 `ang`中，然后在此基础之上，在他的内部直接调用了 `ForDrawStatementpainter` 函数，一步绘制出图形。我们之所以实现` Set_circle_Statement` 语句，是为了通过我们的自主创新，得到一条相对综合性的命令，体现了封装的抽象概念。
+   - 不过我们自己创新的 `Set_circle_Statement` 语句有所不同，对于这条语句，只需要输入一条 `Set_circle_Statement` 语句，就可以绘制出一个圆或者椭圆。具体原因是因为，在进行 `Set_circle_Statement` 的语义分析时，会将它里面包含的绘制椭圆和圆的参数传入`orx`，`ory`，`scx`，`scy ` 和 `ang` 中，然后在此基础之上，在他的内部直接调用了 `ForDrawStatementpainter` 函数，一步绘制出图形。我们之所以实现` Set_circle_Statement` 语句，是为了通过我们的自主创新，得到一条相对综合性的命令，体现了封装的抽象概念。
 
 #### 3.3 创新点
 
