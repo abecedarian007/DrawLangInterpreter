@@ -1,6 +1,6 @@
 # 绘图语言编译器
 
-> 特别鸣谢 luyi 和 front 共同完成本项目
+> 特别鸣谢 [ly](https://github.com/K3nNgxD) 和 front 共同完成本项目
 
 
 
