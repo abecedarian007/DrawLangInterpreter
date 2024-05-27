@@ -1,4 +1,4 @@
-# 绘图语言编译器
+# 绘图语言解释器 Drawing Language Interpreter
 
 > 特别鸣谢 [ly](https://github.com/K3nNgxD) 和 front 共同完成本项目
 
